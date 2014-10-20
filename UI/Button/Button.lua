@@ -70,7 +70,6 @@ UI.Button = UI.Panel:extend({
 			if (not self._enabled) then
 				return
 			end
-			self.highlight:Hide()
 			if (self.onClick) then
 				self:onClick()
 			end
