@@ -372,7 +372,7 @@ O3:module({
 			type = 'Button',
 			label = 'Export current spec',
 			onClick = function (option)
-				O3.Copy:copy(self:exportSpec())
+				O3.Copy(self:exportSpec())
 			end,
 		})
 	end,

@@ -21,9 +21,14 @@ local Class = {
 	-- @param child The child class to extend
 	extend = function (self, child)	
 		local child = child or {}
-		setmetatable(child, {__index = self})
+		setmetatable(child, {__index = self, __call = self.instance})
 		child._parent = self
 		return child
+	end,
+	setCall = function (self, call)
+		local mt = getmetatable(self)
+		mt.__call = call
+		setmetatable(self, mt)
 	end,
 	instance = function (self, child, ...)
 		child = self:extend(child):new(...)
@@ -43,6 +48,7 @@ local Class = {
 	_mix = function (self, target)
 	end,
 }
+setmetatable(Class, {__call = Class.extend})
 
 local EventHandler = Class:extend({
 	unregisterEvents = function (self)

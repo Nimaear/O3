@@ -2,7 +2,7 @@ local addon, ns = ...
 local O3 = ns.O3
 
 local CopyWindow = O3.UI.Window:extend({
-	--name = 'O3Copy',
+	name = 'O3Copy',
 	title = 'O3',
 	subTitle = 'Copy',
 	width = 500,
@@ -70,7 +70,7 @@ local CopyWindow = O3.UI.Window:extend({
 	end
 })
 
-O3:module({
+local copy = O3:module({
 	name = 'Copy',
 	readable = 'Copy',
 	config = {
@@ -82,6 +82,7 @@ O3:module({
 			self:create()
 		end
 		self.panel:show()
+		self.panel:raise()
 		self.editBox:SetText(text)
 		self.editBox:HighlightText(0)
 		self.editBox:Enable()
@@ -95,3 +96,5 @@ O3:module({
 		self.editBox = self.panel.editBox		
 	end,
 })
+
+copy:setCall(copy.copy)

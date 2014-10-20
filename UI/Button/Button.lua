@@ -24,7 +24,8 @@ UI.Button = UI.Panel:extend({
 	setup = function (self, frame)
 		for k, v in pairs(self.attributes) do
 			frame:SetAttribute(k, v)
-		end	
+		end
+		frame.panel = self
 	end,
 	hook = function (self)
 		self.frame:RegisterForClicks('AnyUp')

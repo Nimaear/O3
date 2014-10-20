@@ -32,6 +32,7 @@ UI\Option\Range.lua
 
 UI\Window\Toolbar.lua
 UI\Window\Window.lua
+UI\Window\ConfirmWindow.lua
 UI\Window\Manager.lua
 UI\Window\ScrollWindow.lua
 UI\Window\PagerWindow.lua

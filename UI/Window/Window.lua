@@ -10,6 +10,7 @@ UI.Window = UI.Panel:extend({
 	subTitle = nill,
 	managed = false,
 	raisedWindow = nil,
+	savePositionAndSize = true,
 	_weight = 1,
 	closeWithEscape = false,
 	_defaults = {
@@ -28,13 +29,15 @@ UI.Window = UI.Panel:extend({
 	raise = function (self)
 		if (self.raisedWindow) then
 			self.raisedWindow.frame:SetFrameStrata('MEDIUM')
+			self.raisedWindow.frame:SetFrameLevel(100)
 		end
 		self.raisedWindow = self
 		self.raisedWindow.frame:SetFrameStrata('HIGH')
+		self.raisedWindow.frame:SetFrameLevel(101)
 	end,
-	savePosition = function (self)
+	savePositionAndSize = function (self)
 		local windowSettings = O3.settings.Window[self.name]
-		if (self.name) then
+		if (windowSettings and self.name) then
 			O3.settings.Window = O3.settings.Window or {}
 			O3.settings.Window[self.name] = O3.settings.Window[self.name] or {}
 			O3.settings.Window[self.name].left = self.frame:GetLeft()
@@ -45,9 +48,10 @@ UI.Window = UI.Panel:extend({
 	end,
 	loadPosition = function (self)
 		local windowSettings = O3.settings.Window[self.name]
-		
-		self:point('BOTTOMLEFT', self.parentFrame, 'BOTTOMLEFT', windowSettings.left, windowSettings.bottom)
-		self.frame:SetSize(windowSettings.width, windowSettings.height)	
+		if (windowSettings) then
+			self:point('BOTTOMLEFT', self.parentFrame, 'BOTTOMLEFT', windowSettings.left, windowSettings.bottom)
+			self.frame:SetSize(windowSettings.width, windowSettings.height)	
+		end
 	end,
 	createContent = function (self)
 		local headerHeight = self.settings.headerHeight
@@ -91,7 +95,7 @@ UI.Window = UI.Panel:extend({
 				self:createTexture({
 					layer = 'BACKGROUND',
 					file = O3.Media:texture('Background'),
-					subLayer = -7,
+					subLayer = -5,
 					tile = true,
 					color = {color.r, color.g, color.b, 1},
 					-- color = {1, 0.2, 0.2, 0.95},
@@ -174,8 +178,8 @@ UI.Window = UI.Panel:extend({
 					if button == "LeftButton" and self.parent.frame.isMoving then
 						self.parent.frame:StopMovingOrSizing()
 						self.parent.frame.isMoving = false
-						if not self.parent.managed then
-							self.parent:savePosition()
+						if not self.parent.managed and self.parent.savePosition then
+							self.parent:savePositionAndSize()
 						end						
 					end
 				end)
@@ -183,8 +187,8 @@ UI.Window = UI.Panel:extend({
 					if ( self.parent.frame.isMoving ) then
 						self.parent.frame:StopMovingOrSizing()
 						self.parent.frame.isMoving = false
-						if not self.parent.managed then
-							self.parent:savePosition()
+						if not self.parent.managed and self.parent.savePosition then
+							self.parent:savePositionAndSize()
 						end
 					end
 				end)
@@ -260,7 +264,7 @@ UI.Window = UI.Panel:extend({
 		self.frame = CreateFrame(self.type, self.name, self.parentFrame)
 		self.frame:SetMovable(true)
 		self.frame:SetClampedToScreen(true)
-		self.frame:SetToplevel(true)
+		--self.frame:SetToplevel(true)
 		self.frame:EnableMouse(true)
 		self.frame:SetScript('OnHide', function (frame)
 			if (self.onHide) then
@@ -276,7 +280,8 @@ UI.Window = UI.Panel:extend({
 		self:createRegions()
 		self:hook()
 		self:style()
-		if not self.managed and O3.settings.Window and O3.settings.Window[self.name] then
+		self.frame:SetUserPlaced(false)
+		if not self.managed and self.savePositionAndSize and O3.settings.Window and O3.settings.Window[self.name] then
 			self:loadPosition()
 		else
 			self:position()	
@@ -354,3 +359,4 @@ UI.Window = UI.Panel:extend({
 		self:postInit(...)
 	end,
 })
+
