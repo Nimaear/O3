@@ -1,0 +1,5 @@
+<Bindings>
+  <Binding name="Focus mouseover" description="Focus Mouseover" header="O3">
+    RunMacroText('/focus [@mouseover,exists];[@target,exists]')
+  </Binding>
+</Bindings>
