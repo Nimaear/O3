@@ -1,0 +1,55 @@
+## Interface: 60000
+## DefaultState: Enabled
+## Title: |cFF007FFFO3|r Core
+## Author: Oz
+## Version: 0.1
+## Notes: O3 Core
+## SavedVariablesPerCharacter: O3Settings
+
+O3.lua
+UI\UI.lua
+Module.lua
+Modules\Media.lua
+
+UI\Panel.lua
+UI\ScrollPanel.lua
+UI\EditBox.lua
+UI\CheckBox.lua
+UI\DropDown.lua
+UI\FauxScrollPanel.lua
+UI\StatusBar.lua
+
+UI\Button\Button.lua
+UI\Button\IconButton.lua
+UI\Button\GlyphButton.lua
+
+UI\Option\Option.lua
+UI\Option\DropDown.lua
+UI\Option\Button.lua
+UI\Option\Title.lua
+UI\Option\Toggle.lua
+UI\Option\Range.lua
+
+UI\Window\Toolbar.lua
+UI\Window\Window.lua
+UI\Window\Manager.lua
+UI\Window\ScrollWindow.lua
+UI\Window\PagerWindow.lua
+UI\Window\ItemListWindow.lua
+UI\Window\FauxScrollWindow.lua
+UI\Window\OptionsWindow.lua
+
+Modules\Settings.lua
+Modules\Chat.lua
+Modules\CombatLog.lua
+Modules\ErrorFrame.lua
+Modules\Interrupt.lua
+Modules\SmallPleasures.lua
+Modules\Talentmacro.lua
+Modules\ChatBubbles.lua
+Modules\Buffs.lua
+Modules\CooldownCount.lua
+Modules\Minimap.lua
+Modules\Tooltip.lua
+Modules\CooldownBar.lua
+Modules\CopyWindow.lua
