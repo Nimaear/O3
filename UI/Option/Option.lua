@@ -11,7 +11,11 @@ UI.Option = UI.Panel:extend({
 	change = function (self, value, doNotExecuteHooks)
 		local handler = self.handler
 		self.value = value
-		handler.settings[self.token] = self.value
+		if (self.subModule) then
+			handler.settings[self.subModule][self.token] = self.value
+		else
+			handler.settings[self.token] = self.value
+		end
 		self:update()
 		if doNotExecuteHooks then
 			return
@@ -32,8 +36,9 @@ UI.Option = UI.Panel:extend({
 			object.options = {}
 		end
 		if (not rawget(object, 'addOption')) then
-			object.addOption = function (self, token, option)
+			object.addOption = function (self, token, option, subModule)
 				option.token = token
+				option.subModule = subModule
 				table.insert(self.options, option)
 			end
 		end
@@ -97,7 +102,11 @@ UI.Option = UI.Panel:extend({
 		self:createControl()
 	end,
 	preInit = function (self)
-		self.value = self.handler.settings[self.token]
+		if (self.subModule) then
+			self.value = self.handler.settings[self.subModule] and self.handler.settings[self.subModule][self.token] or nil
+		else
+			self.value = self.handler.settings[self.token]
+		end
 		if (not self.setter) then
 			self.setter = self.token..'Set'
 		end
