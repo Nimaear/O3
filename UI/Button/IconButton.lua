@@ -81,6 +81,13 @@ UI.IconButton = UI.Button:extend({
 				end
 			end)
 		end
+		if (self.onKeyUp) then
+			self.frame:SetScript('OnKeyUp', function (frame, ...)
+				if (self.onKeyUp) then
+					self:onKeyUp(...)
+				end
+			end)
+		end
 		if (self.onMouseDown) then
 			self.frame:SetScript('OnMouseDown', function (frame, ...)
 				if (not self._enabled) then
