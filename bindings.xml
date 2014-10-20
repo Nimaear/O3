@@ -1,5 +1,5 @@
 <Bindings>
-  <Binding name="Focus mouseover" description="Focus Mouseover" header="O3">
+  <Binding name="Focus mouseover" description="Focus Mouseover" header="O3Targeting" category="O3 Bindings">
     RunMacroText('/focus [@mouseover,exists];[@target,exists]')
   </Binding>
 </Bindings>
