@@ -2,6 +2,8 @@ local addon, ns = ...
 local O3 = ns.O3
 local UI = O3.UI
 
+local raisedWindow = nil
+
 UI.Window = UI.Panel:extend({
 	frameStrata = 'MEDIUM',
 	width = 350,
@@ -27,13 +29,13 @@ UI.Window = UI.Panel:extend({
 		end
 	end,
 	raise = function (self)
-		if (self.raisedWindow) then
-			self.raisedWindow.frame:SetFrameStrata('MEDIUM')
-			self.raisedWindow.frame:SetFrameLevel(100)
+		if (raisedWindow and raisedWindow ~= self) then
+			raisedWindow.frame:SetFrameStrata('MEDIUM')
+			raisedWindow.frame:SetFrameLevel(100)
 		end
-		self.raisedWindow = self
-		self.raisedWindow.frame:SetFrameStrata('HIGH')
-		self.raisedWindow.frame:SetFrameLevel(101)
+		raisedWindow = self
+		raisedWindow.frame:SetFrameStrata('TOOLTIP')
+		raisedWindow.frame:SetFrameLevel(101)
 	end,
 	savePositionAndSize = function (self)
 		local windowSettings = O3.settings.Window[self.name]
