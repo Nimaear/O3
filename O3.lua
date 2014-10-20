@@ -289,4 +289,6 @@ _G['O3'] = ns.O3
 SLASH_RELOADUI1 = "/rl"
 SlashCmdList.RELOADUI = ReloadUI
 
+
+BINDING_HEADER_O3General = 'General'
 BINDING_HEADER_O3Targeting = 'Targeting'
