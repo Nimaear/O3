@@ -292,3 +292,9 @@ SlashCmdList.RELOADUI = ReloadUI
 
 BINDING_HEADER_O3General = 'General'
 BINDING_HEADER_O3Targeting = 'Targeting'
+_G["BINDING_NAME_CLICK O3FocusMouseOver:RightButton"] = 'Focus mouseover'
+
+
+local focuseMouseOverButton = CreateFrame("Button", "O3FocusMouseOver", UIParent, "SecureActionButtonTemplate")
+focuseMouseOverButton:SetAttribute("type", "macro")
+focuseMouseOverButton:SetAttribute("macrotext", "/focus [@mouseover,exists];[@target,exists]")

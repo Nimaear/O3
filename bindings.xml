@@ -2,7 +2,6 @@
   <Binding name="Toggle settings window" description="Settings Window" header="O3General" category="O3 Bindings">
     O3.SettingsWindow:toggle()
   </Binding>
-  <Binding name="Focus mouseover" description="Focus Mouseover" header="O3Targeting" category="O3 Bindings">
-    RunMacroText('/focus [@mouseover,exists];[@target,exists]')
+  <Binding name="CLICK O3FocusMouseOver:RightButton" description="Focus Mouseover" header="O3Targeting" category="O3 Bindings">
   </Binding>
 </Bindings>
