@@ -34,7 +34,7 @@ UI.Window = UI.Panel:extend({
 			raisedWindow.frame:SetFrameLevel(100)
 		end
 		raisedWindow = self
-		raisedWindow.frame:SetFrameStrata('TOOLTIP')
+		raisedWindow.frame:SetFrameStrata('HIGH')
 		raisedWindow.frame:SetFrameLevel(101)
 	end,
 	savePositionAndSize = function (self)
