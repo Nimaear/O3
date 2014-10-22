@@ -7,7 +7,7 @@ O3:module({
 	config = {
 		enabled = true,
 		rareWarning = true,
-		rareWarningMessage = "Rare spotted!",
+		rareWarningMessage = "%s spotted!",
 	},
 	events = {
 	},
@@ -31,9 +31,11 @@ O3:module({
 			self:registerEvent('VIGNETTE_ADDED')           
 		end
 	end,
-	VIGNETTE_ADDED = function (self)
+	VIGNETTE_ADDED = function (self, vignetteInstanceId, ...)
 		PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
-		RaidNotice_AddMessage(RaidWarningFrame, self.settings.message, ChatTypeInfo["RAID_WARNING"])
+		local x, y, name, objectIcon = C_Vignettes.GetVignetteInfoFromInstanceID(vignetteInstanceId)
+		name = name or 'Rare'
+		RaidNotice_AddMessage(RaidWarningFrame, self.settings.rareWarningMessage:format(name), ChatTypeInfo["RAID_WARNING"])
 	end,
 	rareWarningSet = function (self)
 		if (self.settings.rareWarning) then
