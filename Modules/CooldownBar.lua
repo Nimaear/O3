@@ -5,19 +5,65 @@ local NOT_CHARGING = 2^32 / 1000
 
 local CooldownButton = O3.UI.IconButton:extend({
 	morphedSpells = {
-		[108194] = 47476,
+		[108194] = 47476, -- Asphyxiate
+		[108200] = 175680, -- Remorseless Winter
+		[108199] = 175680, -- Gorefiend's grasp
+		[108201] = 175680, -- Desecrated ground
 		[48743] = 175678,
-		[30283] =175707,
+		[30283] =175707, -- Shadowfury
+		[6789] = 175707, -- Mortal coil
+		[5484] = 175707, -- Howl of terror
 		[114189] = 755,
 		[119915] = 119898,
 		[119915] = 119898,
-		[175707] = 6789,
 		[113861] = 77801,
 		[113858] = 77801,
 		[112921] = 1122,
 		[140763] = 1122,
 		[112927] = 18540,
 		[30146] = 112870,
+		[115098] = 175693, -- Chi wave
+		[124081] = 175693, -- Zen Sphere
+		[123986] = 175693, -- Chi Burst
+		[119381] = 175697, -- Leg sweep
+		[119392] = 175697, -- Charging ox wave
+		[116844] = 175697, -- Ring of Peace
+		[103840] = 34428, -- Impending victory
+		[118000] = 175708, -- Dragon roar
+		[46968] = 175708, -- Shockwave
+		[107570] = 175708, -- Storm bolt
+		[46924] = 175710, -- Bladestorm
+		[12292] = 175710, -- Bloodbath
+		[107574] = 175710, -- Avatar
+		[114028] = 23920, -- Mass spell reflect
+		[114029] = 3411, -- Safeguard
+		[109248] = 175686, -- Binding shot
+		[19386] = 175686, -- Wyvern
+		[19577] = 175686, -- Intimidating
+		[117050] = 175687, -- Glaive toss
+		[109259] = 175687, -- Power shot
+		[120360] = 175687, -- Barrage
+		[132469] = 175682, -- Typhoon
+		[102359] = 175682, -- Mass entanglement
+		[102355] = 175682, -- Faerie swarm
+		[102793] = 175683, -- Ursol's vortex
+		[99] = 175683, -- Incapacitating roar
+		[5211] = 175683, -- Mighty bash
+		[157913] = 45438, -- Evanesce
+		[113724] = 175689, -- Ring of Frost
+		[113724] = 175689, -- Ring of Frost
+		[111264] = 175689, -- Ice Ward
+		[102051] = 175689, -- Frost jaw
+		[157997] = 122, -- Ice Nova
+		[123040] = 34433, -- Mind bender
+		[110744] = 175702, -- Divine Star
+		[120517] = 175702, -- Halo
+		[121135] = 175702, -- cascade
+		[105593] = 853, -- Fist of justice
+		[114165] = 175699, -- Holy prism
+		[114158] = 175699, -- Lights hammer
+		[114157] = 175699, -- Execution sentence
+		[51485] = 2484, -- Eearth grab
 	},
 	update = function (self)
 		if (not self.actionId) then
@@ -144,7 +190,7 @@ local CooldownButton = O3.UI.IconButton:extend({
 		end
 		local name, link = GetMacroItem(id)
 		if (name) then
-			local a, b, color, ltype, itemId, enchantId, gem1, gem2, gem3, gem4, suffix, unique, linkLvl, name, d, e, f =   string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+			local a, b, color, ltype, itemId, enchantId, gem1, gem2, gem3, gem4, suffix, unique, linkLvl, name, d, e, f =   string.find(link, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
 			return 'item', itemId
 		end
 		return nil, nil
