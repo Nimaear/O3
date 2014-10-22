@@ -49,15 +49,17 @@ O3:module({
 		ObjectiveTrackerFrame:SetMovable(true)
 		ObjectiveTrackerFrame:SetUserPlaced(false)
 
-		hooksecurefunc(ObjectiveTrackerFrame, "SetPoint", function (self,...)
+		local adjustSetPoint =  function (self,...)
 			local a1,af,a2,x,y = ...
 			if af == "MinimapCluster" then    
 				self:SetPoint(a1,af,a2,x,-35)
 			end
-		end)
+		end
+
+		hooksecurefunc(ObjectiveTrackerFrame, "SetPoint", adjustSetPoint)
 	
 	end,
 	postInit = function (self)
-		self:makeTrackerMovable()
+		--self:makeTrackerMovable()
 	end,
 })
