@@ -11,12 +11,17 @@ O3:module({
 		font = O3.Media:font('Normal'),
 		fontSize = 10,
 		fontStyle = '',
+		fontShadow = false,
 		tabFont = O3.Media:font('Normal'),
 		tabFontSize = 10,
 		tabFontStyle = '',
+		tabFontShadow = true,
 		customColor = true,
 		urlColor = "16FF5D",
 		useBrackets = true,
+	},
+	events = {
+		PLAYER_ENTERING_WORLD = true,
 	},
 	settings = {},
 	name = 'Chat',
@@ -30,7 +35,7 @@ O3:module({
 			type = 'Toggle',
 			label = 'Visible',
 			setter = 'backgroundSet'
-		})		
+		})
 		self:addOption('alpha', {
 			type = 'Range',
 			min = 5,
@@ -66,7 +71,11 @@ O3:module({
 			type = 'DropDown',
 			label = 'Outline',
 			_values = O3.Media.fontStyles
-		})   
+		})
+		-- self:addOption('fontShadow', {
+		-- 	type = 'Toggle',
+		-- 	label = 'Shadow',
+		-- })		
 		self:addOption('_2', {
 			type = 'Title',
 			label = 'Tab Font',
@@ -87,6 +96,10 @@ O3:module({
 			label = 'Outline',
 			_values = O3.Media.fontStyles
 		})
+		self:addOption('tabFontShadow', {
+			type = 'Toggle',
+			label = 'Shadow',
+		})		
 		self:addOption('_1', {
 			type = 'Title',
 			label = 'URL copy',
@@ -120,18 +133,29 @@ O3:module({
 	applyOptions = function (self)
 		for i = 1, NUM_CHAT_WINDOWS do
 			local frame = _G[format("ChatFrame%s", i)]
-			_G["ChatFrame"..i.."TabText"]:SetFont(self.config.tabFont, self.config.tabFontSize, self.config.tabFontStyle)
-			_G["ChatFrame"..i]:SetFont(self.config.font, self.config.fontSize, self.config.fontStyle)
+			_G["ChatFrame"..i.."TabText"]:SetFont(self.settings.tabFont, self.settings.tabFontSize, self.settings.tabFontStyle)
+			if (self.settings.tabFontShadow) then
+				_G["ChatFrame"..i.."TabText"]:SetShadowColor(0.1, 0.1, 0.1, 1)
+				_G["ChatFrame"..i.."TabText"]:SetShadowOffset(1, -1)
+			else
+				_G["ChatFrame"..i.."TabText"]:SetShadowColor(0.1, 0.1, 0.1, 0)
+			end
+			_G["ChatFrame"..i]:SetFont(self.settings.font, self.settings.fontSize, self.settings.fontStyle)
+			if (self.settings.fontShadow) then
+				_G["ChatFrame"..i]:SetShadowColor(0.1, 0.1, 0.1, 1)
+				_G["ChatFrame"..i]:SetShadowOffset(1, -1)
+			else
+				_G["ChatFrame"..i]:SetShadowColor(0.1, 0.1, 0.1, 0)
+			end
 		end    
 	end,
 	createChatWindow = function (self)
-		local chatFrame = CreateFrame('Frame', nil, UIParent)
-		chatFrame:SetSize(374, 174)
-		chatFrame:SetPoint('BOTTOMLEFT')
-		chatFrame:SetFrameStrata("BACKGROUND")
 
 		local panel = O3.UI.Panel:instance({
-			frame = chatFrame,
+			width = 374,
+			height = 174,
+			parentFrame = UIParent,
+			frameStrata = 'BACKGROUND',
 			alpha = self.settings.alpha,
 			createRegions = function (panel)
 				panel.header = panel:createPanel({
@@ -211,25 +235,28 @@ O3:module({
 		end
 		-- O3.UI:wod(chatFrame)
 		table.insert(self.panels, panel)
-		return chatFrame
+		return panel
 	end,
-	postInit = function (self)
+	VARIABLES_LOADED = function (self)
+		local panel1 = self:createChatWindow()
+		panel1:point('BOTTOMLEFT',4, 4)
+		self.mainChat = panel1
+
+		local panel2 = self:createChatWindow()
+		panel2:point("BOTTOMLEFT", panel1.frame, "TOPLEFT", 0, 26)
+
+	end,
+	PLAYER_ENTERING_WORLD = function (self)
 		if not IsAddOnLoaded("Blizzard_CombatLog") then
 			LoadAddOn("Blizzard_CombatLog")
 		end
-
-		local panelLeft = self:createChatWindow()
-		panelLeft:SetPoint("BOTTOMLEFT",UIParent,"BOTTOMLEFT",4, 4)
-		self.mainChat = panelLeft
-
-		local panelLeftTop = self:createChatWindow()
-		panelLeftTop:SetPoint("BOTTOMLEFT", panelLeft, "TOPLEFT", 0, 26)
 
 		self:setupChat()
 
 		self:setupChatPosAndFont(panelLeft, panelLeftTop)
 
 		self:urlCopy()
+		self:applyOptions()
 
 		if GetCVar("chatMouseScroll") == "1" then
 			FloatingChatFrame_OnMouseScroll = function(self, direction)
@@ -252,26 +279,33 @@ O3:module({
 				end
 			end
 		end
+		self:unregisterEvent('PLAYER_ENTERING_WORLD')
 	end,
-	setupChatPosAndFont = function(self, panelLeft, panelLeftTop)
+	setupChatPosAndFont = function(self)
 		for i = 1, NUM_CHAT_WINDOWS do
 			local frame = _G[format("ChatFrame%s", i)]
-			_G["ChatFrame"..i.."TabText"]:SetFont(self.config.font, self.config.fontSize, self.config.fontStyle)
-			_G["ChatFrame"..i]:SetFont(self.config.font, self.config.fontSize, self.config.fontStyle)
-			_G["ChatFrame"..i]:SetScale(1)
 			if (i == 1) then
 				frame:ClearAllPoints()
-				frame:SetPoint("TOPLEFT",panelLeft,"TOPLEFT",6,-22)
-				frame:SetPoint("BOTTOMRIGHT",panelLeft,"BOTTOMRIGHT",-6,10)
-				frame:SetFrameStrata("LOW")
-				_G["ChatFrame1Tab"]:SetFrameStrata("LOW")
+				frame:SetParent(self.panels[1].frame)
+				frame:SetPoint("TOPLEFT",self.panels[1].frame,"TOPLEFT",3,-26)
+				frame:SetPoint("BOTTOMRIGHT",self.panels[1].frame,"BOTTOMRIGHT",-3, 7)
+				frame:SetFrameStrata('BACKGROUND')
+				frame:SetFrameLevel(self.panels[1].frame:GetFrameLevel()+1)
+				SetChatWindowLocked(1, true)
+				_G["ChatFrame1Tab"]:SetFrameStrata('BACKGROUND')
+				_G["ChatFrame1Tab"]:SetFrameLevel(self.panels[1].frame:GetFrameLevel()+1)
 				FCF_SavePositionAndDimensions(frame)
 			elseif (_G["ChatFrame"..i.."TabText"]:GetText() == "Private") then
+				frame:SetParent(self.panels[2].frame)
 				frame:ClearAllPoints()
-				frame:SetPoint("TOPLEFT",panelLeftTop,"TOPLEFT",6,-22)
-				frame:SetPoint("BOTTOMRIGHT",panelLeftTop,"BOTTOMRIGHT",-6,10)
-				frame:SetFrameStrata("LOW")
-				_G["ChatFrame"..i.."Tab"]:SetFrameStrata("LOW")
+				SetChatWindowLocked(i, true)
+				SetChatWindowDocked(i, false)
+				frame:SetPoint("TOPLEFT",self.panels[2].frame,"TOPLEFT",3,-26)
+				frame:SetPoint("BOTTOMRIGHT",self.panels[2].frame,"BOTTOMRIGHT",-3,7)
+				frame:SetFrameStrata('BACKGROUND')
+				frame:SetFrameLevel(self.panels[1].frame:GetFrameLevel()+1)
+				_G["ChatFrame"..i.."Tab"]:SetFrameStrata('BACKGROUND')
+				_G["ChatFrame"..i.."Tab"]:SetFrameLevel(self.panels[1].frame:GetFrameLevel()+1)
 				FCF_SavePositionAndDimensions(frame)
 			end
 		end
@@ -296,8 +330,7 @@ O3:module({
 		-- Stop the chat chat from fading out
 		_G[chat]:SetFading(false)
 		
-		local editPanel = O3.UI.Panel:instance({
-			parentFrame = self.mainChat,
+		local editPanel = self.mainChat:createPanel({
 			height = 22,
 			offset = {0, 0, -24, nil},
 			style = function (self)
@@ -445,14 +478,14 @@ O3:module({
 	end,
 	link = function (self, url)
 		
-		if (self.config.customColor) then
-			if (self.config.useBrackets) then
-				url = " |cff"..self.config.urlColor.."|Hurl:"..url.."|h["..url.."]|h|r "
+		if (self.settings.customColor) then
+			if (self.settings.useBrackets) then
+				url = " |cff"..self.settings.urlColor.."|Hurl:"..url.."|h["..url.."]|h|r "
 			else
-				url = " |cff"..self.config.urlColor.."|Hurl:"..url.."|h"..url.."|h|r "
+				url = " |cff"..self.settings.urlColor.."|Hurl:"..url.."|h"..url.."|h|r "
 			end
 		else
-			if (self.config.useBrackets) then
+			if (self.settings.useBrackets) then
 				url = " |Hurl:"..url.."|h["..url.."]|h "
 			else
 				url = " |Hurl:"..url.."|h"..url.."|h "
