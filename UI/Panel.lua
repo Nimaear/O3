@@ -321,7 +321,7 @@ Panel = O3.Class:extend({
 		return self.frame and self.frame:IsVisible()
 	end,
 	setAlpha = function (self, alpha)
-		self.frame:SetAlph(alpha)
+		self.frame:SetAlpha(alpha)
 	end,
 	init = function (self, ...)
 		self:preInit(...)
