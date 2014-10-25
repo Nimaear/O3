@@ -54,3 +54,4 @@ Modules\Minimap.lua
 Modules\Tooltip.lua
 Modules\CooldownBar.lua
 Modules\CopyWindow.lua
+Modules\JSON.lua
