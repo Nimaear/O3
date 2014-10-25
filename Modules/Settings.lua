@@ -47,7 +47,7 @@ O3.SettingsWindow = O3.UI.ScrollWindow:extend({
 		end
 	end,
 	onShow = function (self)
-		self.frame:Raise()
+		self:raise()
 	end,
 	onClose = function (self)
 		if (self.activeWindow) then
@@ -97,6 +97,7 @@ O3.SettingsWindow = O3.UI.ScrollWindow:extend({
 						parent:createOptionsWindow(mod)
 					end
 					mod.optionsWindow:toggle()
+					mod.optionsWindow:raise()
 					parent.activeWindow = mod.optionsWindow
 					mod.optionsWindow:point('TOPLEFT', parentFrame, 'TOPRIGHT', 4, 0)
 					mod.optionsWindow:point('BOTTOMLEFT', parentFrame, 'BOTTOMRIGHT', 4, 0)

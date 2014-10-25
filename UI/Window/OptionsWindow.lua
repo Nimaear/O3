@@ -23,6 +23,7 @@ UI.OptionsWindow = UI.ScrollWindow:extend({
 				else
 					createdOption:point('TOP')
 				end
+				options[i] = createdOption
 				lastFrame = createdOption.frame
 			end
 		end

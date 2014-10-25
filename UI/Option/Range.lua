@@ -6,24 +6,7 @@ UI.Option.Range = UI.Option:extend({
 	min = 0,
 	max = 100,
 	step = 5,
-	change = function (self, value)
-		local parent = self.parent
-		self.value = value
-		self.editBox.frame:SetNumber(value)
-		self.slider.frame:SetValue(value)
-		parent.settings[self.token] = self.value
-
-		if parent[self.setter] then
-			parent[self.setter](parent, self.token, self.value, self)
-		end
-		if parent.changeOption then
-			parent.changeOption(parent, self.token, value, self)
-		end
-		if parent.applyOptions then
-			parent.applyOptions(parent, self)
-		end		
-		parent:saveOption(self.token)
-	end,	
+	ceil = true,
 	createControl = function (self)
 		self.editBox = O3.UI.EditBox:instance({
 			parentFrame = self.frame,
@@ -106,18 +89,40 @@ UI.Option.Range = UI.Option:extend({
 			end,
 		})
 		self.control.frame:SetScript('OnValueChanged', function (slider, value)
-			self:change(value)
+			if (self.ceil) then
+				self:change(math.ceil(value))
+			else
+				self:change(value)
+			end
 		end)
 		self.control:point('LEFT', self.editBox.frame, 'RIGHT', 2, 0)
+	end,
+	reset = function (self)
+		local oldValue = self.value
+		if (self.subModule) then
+			self.value = self.handler.settings[self.subModule][self.token]
+		else
+			self.value = self.handler.settings[self.token]
+		end
+		if (self.value ~= oldValue) then
+			self:update()
+		end
 	end,
 	update = function (self)
 		self.editBox.frame:SetNumber(self.value)
 		self.control.frame:SetValue(self.value)		
 	end,
 	change = function (self, value, doNotExecuteHooks)
+		if value == self.value then
+			return
+		end
 		local handler = self.handler
 		self.value = value
-		handler.settings[self.token] = self.value
+		if (self.subModule) then
+			handler.settings[self.subModule][self.token] = self.value
+		else
+			handler.settings[self.token] = self.value
+		end
 		self:update()
 		if doNotExecuteHooks then
 			return

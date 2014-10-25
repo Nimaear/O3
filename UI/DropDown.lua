@@ -58,7 +58,16 @@ UI.DropDown = UI.Panel:extend({
 			self:update()
 		end
 	end,
+	selectValue = function (self, value)
+		for i = 1, #self._values do
+			if (self._values[i].value == value) then
+				self:select(value, self._values[i].label)
+				break
+			end
+		end
+	end,
 	select = function (self, value, label)
+		--print(self.token, label, value)
 		self.text:SetText(label)
 		self.dropDown:hide()
 		self.value = value

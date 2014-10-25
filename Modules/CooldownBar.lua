@@ -258,6 +258,19 @@ local CooldownPanel = O3.UI.Panel:extend({
 		end
 		self:reset()
 	end,
+	disable = function (self)
+		for event, foo in pairs(self.events) do
+			self.handler:unregisterEvent(event, self)
+		end
+		self:hide()
+	end,
+	enable = function (self)
+		for event, foo in pairs(self.events) do
+			self.handler:unregisterEvent(event, self)
+		end
+		self:show()
+		self:reset()
+	end,
 	ACTIONBAR_UPDATE_COOLDOWN = function (self)
 		for i = 1,24 do 
 			local button = self.buttons[i]
@@ -367,6 +380,7 @@ O3:module({
 	exportList = {},
 	settings = {
 		cooldowns = {},
+		disabled = false,
 	},
 	buttons = {
 	},
@@ -402,9 +416,15 @@ O3:module({
 			type = 'Title',
 			label = 'Interaction',
 		})
+		self:addOption('disabled', {
+			type = 'Toggle',
+			label = 'Disabled',
+			setter = 'disable',
+		})
+
 		self:addOption('enableMouse', {
 			type = 'Toggle',
-			label = 'Toggle mouse',
+			label = 'Enable mouse',
 			setter = 'enableMouse',
 		})
 		self:addOption('reset', {
@@ -421,6 +441,13 @@ O3:module({
 				O3.Copy(self:exportSpec())
 			end,
 		})
+	end,
+	disable = function (self)
+		if (self.settings.disabled) then
+			self.cooldownPanel:disable()
+		else
+			self.cooldownPanel:enable()
+		end
 	end,
 	getInventoryId = function (self, searchItemId)
 		for slot = 1, 19 do
@@ -502,45 +529,6 @@ O3:module({
 		end
 
 	end,
-	-- PLAYER_SPECIALIZATION_CHANGED = function (self)
-	-- 	self:reset()
-	-- end,
-	-- SPELLS_CHANGED = function (self)
-	-- 	self:reset()
-	-- end,
-	-- findSpell = function (self, id)
-	-- 	local found, foundId = false, 0
-	-- 	local foundRow
-	-- 	local _, class = UnitClass('player')
-	-- 	if (not self.classInfo[class]) then
-	-- 		return found, foundId
-	-- 	end
-	-- 	for i = 1, #self.classInfo[class] do
-	-- 		for j = 1, #self.classInfo[class][i] do
-	-- 			local spellId = self.classInfo[class][i][j]
-	-- 			if (spellId == id) then
-	-- 				foundRow = i
-	-- 			end
-	-- 		end
-	-- 	end
-	-- 	if (foundRow) then
-	-- 		for j = 1, #self.classInfo[class][foundRow] do
-	-- 			local spellId = self.classInfo[class][foundRow][j]
-	-- 			if (IsPlayerSpell(spellId)) then
-	-- 				foundId = spellId
-	-- 				found = true
-	-- 				break
-	-- 			end
-	-- 		end
-	-- 	end
-	-- 	return found, foundId
-	-- end,
-
-	-- enableMouse = function (self)
-	-- 	for i = 1, 24 do
-	-- 		self.buttons[i]:EnableMouse(self.settings.enableMouse or false)
-	-- 	end
-	-- end,
 	PLAYER_ENTERING_WORLD = function (self)
 		self:unregisterEvent('PLAYER_ENTERING_WORLD')
 		self.cooldownPanel = CooldownPanel:instance({
@@ -548,7 +536,6 @@ O3:module({
 			frame = self.frame,
 			settings = self.settings,
 		})
-		-- self:registerEvent('ACTIVE_TALENT_GROUP_CHANGED')
+		self:disable()
 	end,
-
 })

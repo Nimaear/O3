@@ -5,10 +5,14 @@ local UI = O3.UI
 UI.Option = UI.Panel:extend({
 	labelWidth = 120,
 	height = 20,
+	subModule = nil,
 	width = 490,
 	label = nil,
 	value = nil,
 	change = function (self, value, doNotExecuteHooks)
+		if value == self.value then
+			return
+		end
 		local handler = self.handler
 		self.value = value
 		if (self.subModule) then
@@ -36,10 +40,10 @@ UI.Option = UI.Panel:extend({
 			object.options = {}
 		end
 		if (not rawget(object, 'addOption')) then
-			object.addOption = function (self, token, option, subModule)
+			object.addOption = function (self, token, option)
 				option.token = token
-				option.subModule = subModule
 				table.insert(self.options, option)
+				return option
 			end
 		end
 		if (not rawget(object, 'addOptions')) then
@@ -50,7 +54,9 @@ UI.Option = UI.Panel:extend({
 			object.saveOption = function (self)
 			end
 		end
-		object.applyOptions = function (self)
+		if (not object.applyOptions) then
+			object.applyOptions = function (self)
+			end
 		end
 	end,
 	createControl = function (self)
@@ -87,6 +93,17 @@ UI.Option = UI.Panel:extend({
 		})
 		self.control:point('LEFT', self.label, 'RIGHT', 5, 0)
 	end,
+	reset = function (self)
+		local oldValue = self.value
+		if (self.subModule) then
+			self.value = self.handler.settings[self.subModule][self.token]
+		else
+			self.value = self.handler.settings[self.token]
+		end
+		if (self.value ~= oldValue) then
+			self.control.frame:SetText(self.value)
+		end
+	end,
 	update = function (self)
 		if (self.value) then
 			self.control.frame:SetText(self.value)
@@ -112,7 +129,7 @@ UI.Option = UI.Panel:extend({
 		end
 	end,
 	postInit = function (self)
-		self:update()	
+		self:update()
 	end,
 })
 
