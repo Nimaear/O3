@@ -71,7 +71,7 @@ UI.EditBox = UI.Panel:extend({
 		frame:SetScript('OnEscapePressed', function (frame)
 			frame:Disable()
 			if (self.onEscapePressed) then
-				self:onEscapePressed()
+				self:onEscapePressed(frame)
 			end
 		end)
 
@@ -84,6 +84,12 @@ UI.EditBox = UI.Panel:extend({
 		if (self.onChar) then
 			frame:SetScript('OnChar', function (frame) 
 				self:onChar(frame)
+			end)
+		end
+
+		if (self.onEditFocusLost) then
+			frame:SetScript('OnEditFocusLost', function (frame)
+				self:onEditFocusLost(frame)
 			end)
 		end
 

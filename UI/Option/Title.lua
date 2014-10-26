@@ -9,6 +9,7 @@ UI.Option.Title = UI.Option:extend({
 		self.label = self:createFontString({
 			fontSize = 14,
 			offset = {0, 0, 0, 0},
+			color = {0.9, 0.9, 0.1, 1},
 			width = self.labelWidth,
 			text = self.label, 
 			justifyH = 'LEFT',

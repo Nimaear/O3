@@ -421,35 +421,35 @@ O3:module({
 		end
 
 		local count = 0
-		-- update border color according where we talk
-		hooksecurefunc("ChatEdit_UpdateHeader", function(chatEdit)
+		-- -- update border color according where we talk
+		-- hooksecurefunc("ChatEdit_UpdateHeader", function(chatEdit)
 
-			local type = editBox:GetAttribute("chatType")
+		-- 	local type = editBox:GetAttribute("chatType")
 
-			if ( type == "CHANNEL" ) then
-				local id = GetChannelName(chatEdit:GetAttribute("channelTarget"))
-				if id == 0 then
-					-- editPanel.texture:SetVertexColor(0.3, 0.3, 0.3)
-					-- if (not editPanel.ag:IsPlaying()) then
-					--     editPanel.ag:setEndColor(0.3, 0.3, 0.3)
-					--     editPanel.ag:Play()
-					-- end
-				else
-					-- editPanel.texture:SetVertexColor(ChatTypeInfo[type..id].r,ChatTypeInfo[type..id].g,ChatTypeInfo[type..id].b)
-					-- if (not editPanel.ag:IsPlaying()) then
-					--     editPanel.ag:setEndColor(ChatTypeInfo[type..id].r,ChatTypeInfo[type..id].g,ChatTypeInfo[type..id].b)
-					--     editPanel.ag:Play()
-					-- end
-				end
-			else
-				-- editPanel.texture:SetVertexColor(ChatTypeInfo[type].r,ChatTypeInfo[type].g,ChatTypeInfo[type].b)
-				-- if (not editPanel.ag:IsPlaying()) then
-				--     editPanel.ag:setEndColor(ChatTypeInfo[type].r,ChatTypeInfo[type].g,ChatTypeInfo[type].b)
-				--     editPanel.ag:Play()
-				-- end
-			end 
+		-- 	if ( type == "CHANNEL" ) then
+		-- 		local id = GetChannelName(chatEdit:GetAttribute("channelTarget"))
+		-- 		if id == 0 then
+		-- 			-- editPanel.texture:SetVertexColor(0.3, 0.3, 0.3)
+		-- 			-- if (not editPanel.ag:IsPlaying()) then
+		-- 			--     editPanel.ag:setEndColor(0.3, 0.3, 0.3)
+		-- 			--     editPanel.ag:Play()
+		-- 			-- end
+		-- 		else
+		-- 			-- editPanel.texture:SetVertexColor(ChatTypeInfo[type..id].r,ChatTypeInfo[type..id].g,ChatTypeInfo[type..id].b)
+		-- 			-- if (not editPanel.ag:IsPlaying()) then
+		-- 			--     editPanel.ag:setEndColor(ChatTypeInfo[type..id].r,ChatTypeInfo[type..id].g,ChatTypeInfo[type..id].b)
+		-- 			--     editPanel.ag:Play()
+		-- 			-- end
+		-- 		end
+		-- 	else
+		-- 		-- editPanel.texture:SetVertexColor(ChatTypeInfo[type].r,ChatTypeInfo[type].g,ChatTypeInfo[type].b)
+		-- 		-- if (not editPanel.ag:IsPlaying()) then
+		-- 		--     editPanel.ag:setEndColor(ChatTypeInfo[type].r,ChatTypeInfo[type].g,ChatTypeInfo[type].b)
+		-- 		--     editPanel.ag:Play()
+		-- 		-- end
+		-- 	end 
 
-		end)
+		-- end)
 	  
 		if _G[chat] ~= _G["ChatFrame2"] then
 			origs[_G[chat]] = _G[chat].AddMessage

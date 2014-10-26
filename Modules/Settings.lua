@@ -121,6 +121,10 @@ O3.SettingsWindow = O3.UI.ScrollWindow:extend({
 
 local settingsWindow = O3.SettingsWindow:new()
 SLASH_OTWO1 = "/o3"
-SlashCmdList.OTWO = function ()
-	settingsWindow:toggle()
+SlashCmdList.OTWO = function (message)
+	if (message == 'export') then
+		O3.Copy(O3.JSON.encode(O3Settings, {indent = true}))
+	else
+		settingsWindow:toggle()
+	end
 end

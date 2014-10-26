@@ -112,6 +112,7 @@ UI.Option = UI.Panel:extend({
 	createRegions = function (self)
 		self.label = self:createFontString({
 			offset = {0, nil, 0, 0},
+			color = {0.9, 0.9, 0.1, 1},
 			width = self.labelWidth,
 			text = self.label, 
 			justifyH = 'RIGHT',
@@ -135,6 +136,94 @@ UI.Option = UI.Panel:extend({
 
 UI.Option.String = UI.Option:extend({
 
+})
+
+
+UI.Option.Text = UI.Option:extend({
+	height = 100,
+	createControl = function (self)
+		self.scrollFrame = self:createPanel({
+			type = 'ScrollFrame',
+			offset = {nil, 0, 0, 0},
+			parentFrame = self.frame,
+			style = function (scrollFrame)
+				scrollFrame:createTexture({
+					layer = 'BACKGROUND',
+					subLayer = 0,
+					color = {0, 0, 0, 0.95},
+					-- offset = {0, 0, 0, nil},
+					-- height = 1,
+				})
+				scrollFrame.outline = scrollFrame:createOutline({
+					layer = 'ARTWORK',
+					subLayer = 3,
+					gradient = 'VERTICAL',
+					color = {1, 1, 1, 0.08 },
+					colorEnd = {1, 1, 1, 0.12 },
+					offset = {1, 1, 1, 1},
+				})
+			end,
+
+			createRegions = function (scrollFrame)
+				scrollFrame.scrollChild = O3.UI.EditBox:instance({
+					parentFrame = scrollFrame.parentFrame,
+					justifyH = 'LEFT',
+					justifyV = 'TOP',
+					--offset = {0, nil, 0, nil},
+					width = 286,
+					height = 100,
+					lines = 10,
+					onEscapePressed = function (editBox)
+						editBox.frame:Disable()
+						self:hide()
+					end,
+					style = function (editBox)
+
+					end,
+					onEscapePressed = function (editBox, frame)
+						self:change(frame:GetText())
+						frame:Disable()
+					end,
+					onEditFocusLost = function (editBox, frame)
+						self:change(frame:GetText())
+					end,
+					onCursorChanged =  function (editBox, frame, x, y, width, height)
+						local frame = editBox.frame
+						y = -1*y
+						local scrollHeight = scrollFrame.frame:GetHeight()
+						local contentHeight =  math.ceil(frame:GetHeight())
+						local scrollMax = scrollFrame.frame:GetVerticalScrollRange()
+						local scrollPos = scrollFrame.frame:GetVerticalScroll()
+						if y < scrollPos then
+							scrollFrame.frame:SetVerticalScroll(y)
+						elseif contentHeight < scrollHeight then
+							scrollFrame.frame:SetVerticalScroll(0)
+						else
+							if y > contentHeight - (height*2) then
+								scrollFrame.frame:SetVerticalScroll(scrollMax)
+							elseif y > scrollHeight then
+								scrollFrame.frame:SetVerticalScroll(y-scrollHeight+height*2)
+							end
+						end
+					end,
+				})
+				self.control = scrollFrame.scrollChild
+
+			end,
+			hook = function (scrollFrame)
+				scrollFrame.frame:SetScript('OnMouseDown', function ()
+					scrollFrame.scrollChild.frame:Enable()
+				end)	
+			end,
+			postInit = function (scrollFrame)
+				scrollFrame.frame:SetScrollChild(scrollFrame.scrollChild.frame)
+				-- scrollFrame.frame:SetVerticalScroll(0)
+				-- scrollFrame.frame:SetHorizontalScroll(0)
+				-- scrollFrame.frame:UpdateScrollChildRect()
+			end,
+		})
+		self.scrollFrame:point('LEFT', self.label, 'RIGHT', 5, 0)
+	end,
 })
 
 

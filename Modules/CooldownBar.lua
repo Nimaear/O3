@@ -4,6 +4,7 @@ local O3 = ns.O3
 local NOT_CHARGING = 2^32 / 1000
 
 local CooldownButton = O3.UI.IconButton:extend({
+
 	morphedSpells = {
 		[108194] = 47476, -- Asphyxiate
 		[108200] = 175680, -- Remorseless Winter
@@ -241,6 +242,8 @@ local CooldownPanel = O3.UI.Panel:extend({
 	parentFrame = UIParent,
 	offset = {nil, nil, nil, 42},
 	buttons = {},
+	_actionLookup = {},
+	_actionLastUpdate = {},
 	events = {
 		ACTIONBAR_UPDATE_COOLDOWN = true,
 		ACTIONBAR_UPDATE_USABLE = true,
@@ -266,7 +269,7 @@ local CooldownPanel = O3.UI.Panel:extend({
 	end,
 	enable = function (self)
 		for event, foo in pairs(self.events) do
-			self.handler:unregisterEvent(event, self)
+			self.handler:registerEvent(event, self)
 		end
 		self:show()
 		self:reset()
@@ -295,10 +298,13 @@ local CooldownPanel = O3.UI.Panel:extend({
 			button:update()
 		end
 	end,
-	ACTIONBAR_SLOT_CHANGED = function (self)
-		for i = 1,24 do 
-			local button = self.buttons[i]
-			button:update()
+	ACTIONBAR_SLOT_CHANGED = function (self, slot)
+		if (self._actionLookup[slot]) then
+			local now = GetTime()
+			if self._actionLastUpdate[slot] > now - 0.1 then
+				self.button[self._actionLookup[slot]]:update()
+				self._actionLastUpdate[slot] = now
+			end
 		end
 	end,	
 	SPELL_UPDATE_COOLDOWN = function (self)
@@ -329,12 +335,17 @@ local CooldownPanel = O3.UI.Panel:extend({
 		end
 	end,
 	save = function (self, id, actionId)
+		if (self.buttons[id].actionId and self._actionLookup[self.buttons[id].actionId]) then
+			self._actionLookup[self.buttons[id].actionId] = nil
+		end
+		self._actionLookup[actionId] = id
 		self.spec = GetSpecialization() or 1
 		self.settings.cooldowns[self.spec] = self.settings.cooldowns[self.spec] or {}
 		self.settings.cooldowns[self.spec][id] = actionId
 	end,	
 	createRegions = function (self)
 		for i = 1, 24 do
+			self._actionLastUpdate[i] = 0
 			local button = CooldownButton:instance({
 				id = i,
 				handler = self,

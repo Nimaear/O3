@@ -50,7 +50,7 @@ UI.IconButton = UI.Button:extend({
 	end,
 	setTexture = function (self, texture)
 		self.icon:SetTexture(texture)
-	end,	
+	end,
 	hook = function (self)
 		self.frame:RegisterForClicks('AnyUp', 'AnyDown')
 		self.frame:SetScript('OnEnter', function (frame)

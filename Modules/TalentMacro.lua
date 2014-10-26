@@ -6,20 +6,14 @@ O3:module({
 	name = 'TalentMacro',
 	config = {
 		enabled = true,
-		harmfulFormat = "#showtooltip %s\n/cast %s",
-		helpfulFormat = "#showtooltip %s\n/cast [@mouseover,exists][@target] %s"
+		format = "#showtooltip %s\n/cast [@mouseover,exists] %s; %s"
 	},
 	settings = {},
 	addOptions = function (self)
-		self:addOption('harmfulFormat', {
+		self:addOption('format', {
 			lines = 5,
-			type = 'String',
-			label = 'Harmful format',
-		})
-		self:addOption('helpfulFormat', {
-			lines = 5,
-			type = 'String',
-			label = 'Friendly format',
+			type = 'Text',
+			label = 'Format',
 		})
 	end,
 	events = {
@@ -59,11 +53,7 @@ O3:module({
 				local selectedTalent, texture = self:getSelectedTalent(i, selectedSpec)
 				if (selectedTalent) then
 					local spellName, rank, spellID = GetMacroSpell(foundMacroId)
-					if (not spellName or IsHarmfulSpell(name) == 1) then
-						EditMacro(foundMacroId, name, nil, string.format(self.settings.harmfulFormat, selectedTalent, selectedTalent))
-					else
-						EditMacro(foundMacroId, name, nil, string.format(self.settings.helpfulFormat, selectedTalent, selectedTalent))
-					end
+					EditMacro(foundMacroId, name, nil, string.format(self.settings.format, selectedTalent, selectedTalent, selectedTalent))
 				end
 			end
 		end	
