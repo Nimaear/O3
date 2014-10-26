@@ -11,7 +11,7 @@ O3:module({
 		self:addOption('channel', {
 			type = 'DropDown',
 			label = 'Channel',
-			choices = {
+			_values = {
 				{ label = 'None', value = nil},
 				{ label = 'Say', value = 'SAY'},
 				{ label = 'Party', value = 'PARTY'},
@@ -67,7 +67,10 @@ O3:module({
 			end
 		end
 		return formatted
-	end	,
+	end,
+	createChatMessage = function(self, XP, maxXP)
+		return "I'm currently at "..self:commaValue(XP).."/"..self:commaValue(maxXP).." ("..floor((XP/maxXP)*100).."%) experience."
+	end,
 	showBar = function (self)
 		if UnitLevel("player") ~= MAX_PLAYER_LEVEL then
 			local XP, maxXP = UnitXP("player"), UnitXPMax("player")
@@ -139,10 +142,10 @@ O3:module({
 			--Send experience info in chat
 			self.mouseFrame:SetScript("OnMouseDown", function()
 				if IsShiftKeyDown() then
-					if GetNumRaidMembers() > 0 then
-						SendChatMessage("I'm currently at "..self:commaValue(XP).."/"..self:commaValue(maxXP).." ("..floor((XP/maxXP)*100).."%) experience.","RAID")
-					elseif GetNumPartyMembers() > 0 then
-						SendChatMessage("I'm currently at "..self:commaValue(XP).."/"..self:commaValue(maxXP).." ("..floor((XP/maxXP)*100).."%) experience.","PARTY")
+					if IsInRaid() then
+						SendChatMessage(self:createChatMessage(XP, maxXP),"RAID")
+					elseif GetNumGroupMembers() > 0 then
+						SendChatMessage(self:createChatMessage(XP, maxXP),"PARTY")
 					end
 				end
 				if IsControlKeyDown() then
@@ -150,7 +153,7 @@ O3:module({
 					if activeChat == "WHISPER" then 
 						local target = GetChannelName(ChatFrame1EditBox:GetAttribute("channelTarget"))
 					end
-					SendChatMessage("I'm currently at "..self:commaValue(XP).."/"..self:commaValue(maxXP).." ("..floor((XP/maxXP)*100).."%) experience.",activeChat, nil, target or nil)
+					SendChatMessage(self:createChatMessage(XP, maxXP),activeChat, nil, target or nil)
 				end
 			end)
 		else
