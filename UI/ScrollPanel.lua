@@ -76,6 +76,9 @@ UI.ScrollPanel = UI.Panel:extend({
 					self.parent:update()
 					local scrollPos = scrollFrame:GetVerticalScroll()
 					local scrollMax = scrollFrame:GetVerticalScrollRange()
+					if (scrollMax == 0) then
+						return
+					end
 					local maxHeight = scrollFrame:GetHeight()-20
 					if (delta < 0) then
 						scrollPos = scrollPos + 25
