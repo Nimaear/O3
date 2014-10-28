@@ -80,15 +80,20 @@ O3:module({
 
         O3.UI.Panel:instance({
             frame = MinimapCluster,
-            style = function (buff)
-                buff:createTexture({
+            style = function (cluster)
+                cluster:createTexture({
                     layer = 'BACKGROUND',
                     offset = {0, 0, 0, 0},
                     subLayer = -7,
                     color = {0.1, 0.1, 0.1, 0.9},
                     height = 1,
                 })
-                buff.outline = buff:createOutline({
+            end,
+        })
+        O3.UI.Panel:instance({
+            frame = MiniMap,
+            style = function (miniMap)
+                miniMap.outline = miniMap:createOutline({
                     layer = 'ARTWORK',
                     gradient = 'VERTICAL',
                     color = {1, 1, 1, 0.2 },
@@ -126,21 +131,20 @@ O3:module({
 
         Minimap:SetMaskTexture(O3.Media:texture('Solid'))
         MinimapCluster:ClearAllPoints()
-        MinimapCluster:SetPoint('TOPRIGHT', -4, -4)
+        MinimapCluster:SetPoint('TOPRIGHT', -37, -4)
 
         --scale minimap
         MinimapCluster:SetScale(1)
 
         Minimap:ClearAllPoints()
-        MinimapCluster:SetSize(196, 196)
-        Minimap:SetSize(192, 192)
+        MinimapCluster:SetSize(197, 197)
+        Minimap:SetSize(195, 195)
         MinimapCluster:SetFrameStrata('BACKGROUND')
         Minimap:SetFrameStrata('BACKGROUND')
 
-
         --minimap position inside the cluster
         Minimap:ClearAllPoints()
-        Minimap:SetPoint("TOPLEFT", 2, -2)
+        Minimap:SetPoint("TOPLEFT", 1, -1)
 
         -- local border = frame:CreateTexture()
         -- border:SetAllPoints()
@@ -154,27 +158,6 @@ O3:module({
         MiniMapTrackingDropDown:SetParent(test)
         --minimap tracking button
         O3:destroy(MiniMapTrackingButton)
-
-        local trackingButton = self:createButton([[Interface\Icons\Ability_Hunter_MasterMarksman]], UIParent, function (self)
-            ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self, 0, -5);
-        end)
-        trackingButton:SetPoint('TOPRIGHT', MinimapCluster, 'BOTTOMRIGHT', 2, -2)
-
-        local calendarButton = self:createButton([[Interface\Icons\Inv_Gizmo_01]], UIParent, function (self)
-            if ( GameTimeCalendarInvitesTexture:IsShown() ) then
-                Calendar_LoadUI();
-                if ( Calendar_Show ) then
-                    Calendar_Show();
-                end
-                GameTimeCalendarInvitesTexture:Hide();
-                GameTimeCalendarInvitesGlow:Hide();
-                self.pendingCalendarInvites = 0;
-                GameTimeFrame.flashInvite = false;
-            else
-                ToggleCalendar();
-            end
-        end)
-        calendarButton:SetPoint('RIGHT', trackingButton, 'LEFT', 0, 0)
 
         local queueButton = self:createButton(nil, QueueStatusMinimapButton)
         queueButton:SetPoint('RIGHT', calendarButton, 'LEFT', 0, 0)

@@ -6,6 +6,7 @@ UI.IconButton = UI.Button:extend({
 	icon = nil,
 	width = 32,
 	height = 32,
+	coords = {.08, .92, .08, .92},
 	style = function (self)
 		self:createTexture({
 			layer = 'BACKGROUND',
@@ -24,7 +25,7 @@ UI.IconButton = UI.Button:extend({
 				layer = 'BORDER',
 				subLayer = 2,
 				file = self.icon,
-				coords = {.08, .92, .08, .92},
+				coords = self.coords,
 				tile = false,
 				-- color = {color.r, color.g, color.b, 0.95},
 				-- color = self.color,
@@ -99,11 +100,11 @@ UI.IconButton = UI.Button:extend({
 			end)
 		end		
 		if (self.onClick) then
-			self.frame:SetScript('OnClick', function (frame)
+			self.frame:SetScript('OnClick', function (frame, button, down)
 				if (not self._enabled) then
 					return
 				end
-				self:onClick(self.frame)
+				self:onClick(self.frame, button, down)
 			end)
 		end
 	end,	

@@ -53,8 +53,8 @@ O3:module({
 
 		local adjustSetPoint =  function (self,...)
 			local a1,af,a2,x,y = ...
-			if af == "MinimapCluster" then    
-				self:SetPoint(a1,af,a2,x,-35)
+			if af == "MinimapCluster" and not done then    
+				self:SetPoint(a1,af,a2,36,-36)
 			end
 		end
 
@@ -62,6 +62,6 @@ O3:module({
 	
 	end,
 	postInit = function (self)
-		--self:makeTrackerMovable()
+		self:makeTrackerMovable()
 	end,
 })
