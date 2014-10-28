@@ -18,30 +18,32 @@ local Module = O3.Class:extend({
 	setup = function (self)
 		self:createPanel()
 		self.frame = self.panel.frame
-		self:initEventHandler()
-
+		self:setupEventHandler()
 	end,
 	enable = function (self)
 		if (not self.frame) then
 			self:setup()
 		end
+		if (self._eventHandlerInitialized) then
+			self:reRegisterEvents()
+		else
+			self:registerEvents()
+		end
 		self.settings.enabled = true
-		self:show()
+		if (self.panel) then
+			self.panel:show()
+		elseif (self.frame) then
+			self.frame:Show()
+		end
 	end,
 	addOptions = function (self)
 	end,
 	disable = function (self)
 		self.settings.enabled = false
 		self:unregisterEvents()
-		self:hide()
-	end,
-	show = function (self)
-		if (self.frame) then
-			self.frame:Show()
-		end
-	end,
-	hide = function (self)
-		if (self.frame) then
+		if (self.panel) then
+			self.panel:hide()
+		elseif (self.frame) then
 			self.frame:Hide()
 		end
 	end,
@@ -54,14 +56,14 @@ local Module = O3.Class:extend({
 	end,
 	init = function (self)
 		self:preInit()
-		setmetatable(self.settings, {__index = self.config})
+		
 		if (self.settings.enabled) then
 			self:enable()
-			self:addOptions()
 		end
 		self:postInit()
 	end,
 	VARIABLES_LOADED = function (self)
+		setmetatable(self.settings, {__index = self.config})
 	end,
 	register = function (self, O3)
 	end,	

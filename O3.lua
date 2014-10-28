@@ -78,6 +78,20 @@ local EventHandler = Class:extend({
 			self.frame:UnregisterEvent(event)
 		end
 	end,
+	reRegisterEvents = function (self)
+		if (not self._events) then
+			return
+		end
+		for event, objects in pairs(self._events) do
+			if objects then
+				for object, enabled in paris (objects) do
+					if (enabled) and object[event] then
+						self.frame:RegisterEvent(event)
+					end
+				end
+			end
+		end
+	end,
 	registerEvent = function (self, event, object)
 		self.frame:RegisterEvent(event)
 		object = object or self
@@ -120,7 +134,6 @@ local Engine = Class:extend({
 	},
 	events = {
 		PLAYER_LOGIN = true,
-		PLAYER_ENTERING_WORLD = true,
 		VARIABLES_LOADED = true,
 	},
 	formatMoney = function(self, money)
@@ -197,6 +210,12 @@ local Engine = Class:extend({
 		self.playerRealm = GetRealmName()
 		self.playerGUID = UnitGUID('player')
 
+		for i = 1, #self.modules do
+			local m = self.modules[i]
+			if (m.settings and m.settings.enabled) then
+				m:enable()
+			end
+		end
 	end,
 	-------------------------------------------------------------------------------------
 	-- Unregisters all events from a region and hides it
@@ -256,7 +275,7 @@ local Engine = Class:extend({
 			setmetatable(m.settings, {__index = m.config})
 			m:VARIABLES_LOADED()
 		end
-	end,	
+	end,
 	init = function (self)
 		local verticalPixelHeight = nil
 
