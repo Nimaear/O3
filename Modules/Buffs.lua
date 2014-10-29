@@ -144,7 +144,7 @@ O3:module({
 
 		b.styled = true
 	end,
-	postInit = function (self)
+	postCreate = function (self)
 		SetCVar("consolidateBuffs", 0)
 		self.buffAnchor = CreateFrame("Frame", "O3BuffFrame", UIParent)
 		self.tempBuffAnchor = CreateFrame("Frame", "O3TempBuffFrame", UIParent)

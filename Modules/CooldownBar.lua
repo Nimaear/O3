@@ -244,34 +244,8 @@ local CooldownPanel = O3.UI.Panel:extend({
 	buttons = {},
 	_actionLookup = {},
 	_actionLastUpdate = {},
-	events = {
-		ACTIONBAR_UPDATE_COOLDOWN = true,
-		ACTIONBAR_UPDATE_USABLE = true,
-		ACTIONBAR_UPDATE_STATE = true,
-		SPELL_UPDATE_CHARGES = true,
-		SPELL_UPDATE_COOLDOWN = true,
-		ACTIONBAR_SLOT_CHANGED = true,
-		PLAYER_SPECIALIZATION_CHANGED = true,
-		SPELLS_CHANGED = true,
-	},
 	postInit = function (self)
 		self:setSize(12*self.buttonSize+11*self.spacing, 2*self.buttonSize+1*self.spacing)
-		for event, foo in pairs(self.events) do
-			self.handler:registerEvent(event, self)
-		end
-		self:reset()
-	end,
-	disable = function (self)
-		for event, foo in pairs(self.events) do
-			self.handler:unregisterEvent(event, self)
-		end
-		self:hide()
-	end,
-	enable = function (self)
-		for event, foo in pairs(self.events) do
-			self.handler:registerEvent(event, self)
-		end
-		self:show()
 		self:reset()
 	end,
 	ACTIONBAR_UPDATE_COOLDOWN = function (self)
@@ -396,7 +370,14 @@ O3:module({
 	buttons = {
 	},
 	events = {
-		PLAYER_ENTERING_WORLD = true,
+		ACTIONBAR_UPDATE_COOLDOWN = true,
+		ACTIONBAR_UPDATE_USABLE = true,
+		ACTIONBAR_UPDATE_STATE = true,
+		SPELL_UPDATE_CHARGES = true,
+		SPELL_UPDATE_COOLDOWN = true,
+		ACTIONBAR_SLOT_CHANGED = true,
+		PLAYER_SPECIALIZATION_CHANGED = true,
+		SPELLS_CHANGED = true,
 	},
 	defaultCds = {
 		MONK = {
@@ -427,10 +408,9 @@ O3:module({
 			type = 'Title',
 			label = 'Interaction',
 		})
-		self:addOption('disabled', {
+		self:addOption('enabled', {
 			type = 'Toggle',
-			label = 'Disabled',
-			setter = 'disable',
+			label = 'Enabled',
 		})
 
 		self:addOption('enableMouse', {
@@ -453,13 +433,14 @@ O3:module({
 			end,
 		})
 	end,
-	disable = function (self)
-		if (self.settings.disabled) then
-			self.cooldownPanel:disable()
-		else
-			self.cooldownPanel:enable()
-		end
-	end,
+	createPanel = function (self)
+		self.panel = CooldownPanel:instance({
+			handler = self,
+			name = self.name,
+			settings = self.settings,
+		})
+		self._defaultListener = self.panel
+	end,	
 	getInventoryId = function (self, searchItemId)
 		for slot = 1, 19 do
 			local itemId = GetInventoryItemID('player', slot)
@@ -470,7 +451,7 @@ O3:module({
 		return nil
 	end,
 	enableMouse = function (self)
-		self.cooldownPanel:enableMouse(self.settings.enableMouse)
+		self.panel:enableMouse(self.settings.enableMouse)
 	end,
 	findInventoryItemByName = function (self, searchName)
 		for slot = 1, 19 do
@@ -500,7 +481,7 @@ O3:module({
 		table.wipe(self.exportList)
 		
 		for i = 1, 24 do
-			local button = self.cooldownPanel.buttons[i]
+			local button = self.panel.buttons[i]
 			local actionId = button.actionId
 			if actionId then
 				local type, id, subType, spellID = GetActionInfo(actionId)
@@ -535,18 +516,9 @@ O3:module({
 					foundActionId = CooldownButton:findSpell(spellId)
 				end
 				
-				self.cooldownPanel.buttons[i]:set(foundActionId)
+				self.panel.buttons[i]:set(foundActionId)
 			end
 		end
 
-	end,
-	PLAYER_ENTERING_WORLD = function (self)
-		self:unregisterEvent('PLAYER_ENTERING_WORLD')
-		self.cooldownPanel = CooldownPanel:instance({
-			handler = self,
-			frame = self.frame,
-			settings = self.settings,
-		})
-		self:disable()
 	end,
 })

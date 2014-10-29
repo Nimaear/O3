@@ -28,7 +28,7 @@ O3:module({
 	end,
 	VARIABLES_LOADED = function (self)
 		if (self.settings.rareWarning) then
-			self:registerEvent('VIGNETTE_ADDED')           
+			self.events.VIGNETTE_ADDED = true
 		end
 	end,
 	VIGNETTE_ADDED = function (self, vignetteInstanceId, ...)

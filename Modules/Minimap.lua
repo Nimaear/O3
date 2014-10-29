@@ -76,7 +76,7 @@ O3:module({
 
         return button
     end,
-    postInit = function (self)
+    postCreate = function (self)
 
         O3.UI.Panel:instance({
             frame = MinimapCluster,

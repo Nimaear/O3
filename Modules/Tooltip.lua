@@ -140,7 +140,7 @@ O3:module({
         GameTooltipText:SetFont(self.settings.font, self.settings.fontSize, self.settings.fontStyle)
         Tooltip_Small:SetFont(self.settings.font, self.settings.smallSize, self.settings.fontStyle)
     end,
-    postInit = function (self)
+    postCreate = function (self)
 
         self:showCaster()
         self:showSpellId()

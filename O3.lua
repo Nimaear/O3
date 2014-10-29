@@ -65,7 +65,7 @@ local EventHandler = Class:extend({
 		end
 	end,
 	unregisterEvent = function (self, event, object)
-		object = object or self
+		object = object or self._defaultListener or self
 		self._events[event][object] = false
 		local hasEvent = false
 		for object, enabled in pairs(self._events[event]) do
@@ -84,7 +84,7 @@ local EventHandler = Class:extend({
 		end
 		for event, objects in pairs(self._events) do
 			if objects then
-				for object, enabled in paris (objects) do
+				for object, enabled in pairs (objects) do
 					if (enabled) and object[event] then
 						self.frame:RegisterEvent(event)
 					end
@@ -94,7 +94,7 @@ local EventHandler = Class:extend({
 	end,
 	registerEvent = function (self, event, object)
 		self.frame:RegisterEvent(event)
-		object = object or self
+		object = object or self._defaultListener or self
 		self._events[event] = self._events[event] or {}
 		self._events[event][object] = true
 	end,
@@ -197,7 +197,6 @@ local Engine = Class:extend({
 		if (not self.settings[module.name]) then
 			self.settings[module.name] = module.settings
 		end
-		module:register(self)
 	end,
 	PLAYER_LOGIN = function (self)
 		local _, class = UnitClass("player")
@@ -214,6 +213,9 @@ local Engine = Class:extend({
 			local m = self.modules[i]
 			if (m.settings and m.settings.enabled) then
 				m:enable()
+				if (m.PLAYER_LOGIN) then
+					m:PLAYER_LOGIN()
+				end
 			end
 		end
 	end,

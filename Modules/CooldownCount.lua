@@ -2,8 +2,8 @@ local addon, ns = ...
 local O3 = ns.O3
 
 
-local UIParent = _G['UIParent']
-local GetTime = _G['GetTime']
+local UIParent = UIParent
+local GetTime = GetTime
 local floor = math.floor
 local min = math.min
 local round = function(x) 
@@ -68,7 +68,7 @@ O3:module({
             step = 1,
         })		
 	end,
-	applyOptions = function  (self)
+	VARIABLES_LOADED = function (self)
 		MIN_SCALE = self.settings.minScale
 		MIN_DURATION = self.settings.minDuration
 		EXPIRING_DURATION = self.settings.expiringDuration
@@ -76,7 +76,9 @@ O3:module({
 		SECONDS_FORMAT = self.settings.secondsFormat
 		MINUTES_FORMAT = self.settings.minutesFormat
 		HOURS_FORMAT = self.settings.hoursFormat
-		DAYS_FORMAT = self.settings.daysFormat
+		DAYS_FORMAT = self.settings.daysFormat	
+	end,
+	applyOptions = function  (self)
 		for cooldown, timer in pairs(timers) do
 			timer.fontScale = nil
 			self:onSizeChanged(timer, timer:GetSize())
@@ -130,10 +132,6 @@ O3:module({
 			self:stop(timer)
 		end
 	end,
-	register = function (self, O3)
-		self:applyOptions()	
-	end,
-		--returns a new timer object
 	create = function(self, cooldown)
 		--a frame to watch for OnSizeChanged events
 		--needed since OnSizeChanged has funny triggering if the frame with the handler is not shown
@@ -231,12 +229,11 @@ O3:module({
 			end
 		end
 	end,
-	postInit = function (self)
+	postCreate = function (self)
 		local dummy = CreateFrame('Cooldown')
 		hooksecurefunc(getmetatable(dummy).__index, 'SetCooldown', function (cooldown, ...)
 			self:start(cooldown, ...)
 		end)
-	
 	end,
 })
 
