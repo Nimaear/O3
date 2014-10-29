@@ -62,6 +62,6 @@ O3:module({
 	
 	end,
 	postInit = function (self)
-		self:makeTrackerMovable()
+		-- self:makeTrackerMovable()
 	end,
 })
