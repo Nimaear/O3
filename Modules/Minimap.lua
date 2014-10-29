@@ -131,14 +131,14 @@ O3:module({
 
         Minimap:SetMaskTexture(O3.Media:texture('Solid'))
         MinimapCluster:ClearAllPoints()
-        MinimapCluster:SetPoint('TOPRIGHT', -37, -4)
+        MinimapCluster:SetPoint('TOPRIGHT', -29, -4)
 
         --scale minimap
         MinimapCluster:SetScale(1)
 
         Minimap:ClearAllPoints()
-        MinimapCluster:SetSize(197, 197)
-        Minimap:SetSize(195, 195)
+        MinimapCluster:SetSize(199, 199)
+        Minimap:SetSize(197, 197)
         MinimapCluster:SetFrameStrata('BACKGROUND')
         Minimap:SetFrameStrata('BACKGROUND')
 
