@@ -120,14 +120,14 @@ O3:module({
         --GameTimeFrame:Hide()
 
         --the clock button
-        LoadAddOn("Blizzard_TimeManager")
-        if TimeManagerClockButton then
-            local region = TimeManagerClockButton:GetRegions()
-            region:Hide()
-            TimeManagerClockTicker:SetFont(self.settings.font, self.settings.fontSize, self.settings.fontStyle)
-            TimeManagerClockButton:ClearAllPoints()
-            TimeManagerClockButton:SetPoint("TOPRIGHT",Minimap,"TOPRIGHT", 0, 0)
-        end
+        -- LoadAddOn("Blizzard_TimeManager")
+        -- if TimeManagerClockButton then
+        --     local region = TimeManagerClockButton:GetRegions()
+        --     region:Hide()
+        --     TimeManagerClockTicker:SetFont(self.settings.font, self.settings.fontSize, self.settings.fontStyle)
+        --     TimeManagerClockButton:ClearAllPoints()
+        --     TimeManagerClockButton:SetPoint("TOPRIGHT",Minimap,"TOPRIGHT", 0, 0)
+        -- end
 
         Minimap:SetMaskTexture(O3.Media:texture('Solid'))
         MinimapCluster:ClearAllPoints()
