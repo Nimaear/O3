@@ -312,14 +312,16 @@ local CooldownPanel = O3.UI.Panel:extend({
 		if (self.buttons[id].actionId and self._actionLookup[self.buttons[id].actionId]) then
 			self._actionLookup[self.buttons[id].actionId] = nil
 		end
-		self._actionLookup[actionId] = id
+		if (actionId) then
+			self._actionLookup[actionId] = id
+			self._actionLastUpdate[actionId] = 0
+		end
 		self.spec = GetSpecialization() or 1
 		self.settings.cooldowns[self.spec] = self.settings.cooldowns[self.spec] or {}
 		self.settings.cooldowns[self.spec][id] = actionId
 	end,	
 	createRegions = function (self)
 		for i = 1, 24 do
-			self._actionLastUpdate[i] = 0
 			local button = CooldownButton:instance({
 				id = i,
 				handler = self,
@@ -378,6 +380,8 @@ O3:module({
 		ACTIONBAR_SLOT_CHANGED = true,
 		PLAYER_SPECIALIZATION_CHANGED = true,
 		SPELLS_CHANGED = true,
+		PET_BATTLE_OPENING_START = true,
+		PET_BATTLE_CLOSE = true,
 	},
 	defaultCds = {
 		MONK = {
@@ -433,13 +437,40 @@ O3:module({
 			end,
 		})
 	end,
+	PET_BATTLE_OPENING_START = function (self)
+		self.panel:hide()
+	end,
+	PET_BATTLE_CLOSE = function (self)
+		self.panel:show()
+	end,
 	createPanel = function (self)
 		self.panel = CooldownPanel:instance({
 			handler = self,
 			name = self.name,
 			settings = self.settings,
 		})
+		if (C_PetBattles.IsInBattle()) then
+			self.panel:hide()
+		end
 		self._defaultListener = self.panel
+	end,
+	enable = function (self)
+		if (not self.frame) then
+			self:setup()
+		end
+		self.settings.enabled = true
+		if (self.panel and not C_PetBattles.IsInBattle()) then
+			self.panel:show()
+		elseif (self.frame and not C_PetBattles.IsInBattle()) then
+			self.frame:Show()
+		end
+		if (self._eventHandlerInitialized) then
+			self:reRegisterEvents()
+			self:reset()
+		else
+			self._eventHandlerInitialized = true
+			self:registerEvents()
+		end
 	end,	
 	getInventoryId = function (self, searchItemId)
 		for slot = 1, 19 do

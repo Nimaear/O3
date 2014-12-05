@@ -56,3 +56,4 @@ Modules\CooldownBar.lua
 Modules\CopyWindow.lua
 Modules\JSON.lua
 Modules\MicroMenu.lua
+Modules\ExperienceBar.lua

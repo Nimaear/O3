@@ -15,7 +15,11 @@ O3:module({
 			icon = 'Interface\\Icons\\ability_rogue_tricksofthetrade',
 			onClick = function (self, frame, button, down)
 				if down then
-					ToggleGameMenu()
+					if GameMenuFrame:IsShown() then
+						HideUIPanel(GameMenuFrame)
+					else
+						ShowUIPanel(GameMenuFrame)
+					end
 				end
 			end,
 		},
@@ -45,11 +49,13 @@ O3:module({
 		},
 		{
 			icon = 'Interface\\Icons\\ability_marksmanship',
-			onClick = function (self, frame, button, down)
-				if down then
-					ToggleTalentFrame()
-				end
-			end,
+			attributes = {type = 'click', clickbutton = TalentMicroButton},
+			clickRegister = 'AnyDown',
+		},
+		{
+			icon = 'Interface\\Icons\\inv_misc_book_09',
+			attributes = {type = 'click', clickbutton = EJMicroButton},
+			clickRegister = 'AnyDown',
 		},
 		{
 			icon = 'Interface\\Icons\\ability_mount_pegasus',

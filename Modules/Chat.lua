@@ -366,6 +366,24 @@ O3:module({
 			editPanel:hide()
 		end)
 
+		local copyTextButton = O3.UI.GlyphButton:instance({
+			parentFrame = frame,
+			offset = {nil, 0, -24, nil},
+			width = 20,
+			height = 20,
+			text = '',
+			onClick = function ()
+				local ret = {}
+				local lines = { frame:GetRegions() }
+			    for i=#lines, 1, -1 do
+			        if lines[i]:GetObjectType() == "FontString" then
+			            table.insert(ret, lines[i]:GetText())
+			        end
+			    end
+				O3.Copy(table.concat(ret, "\n"))
+			end,
+		})
+
 		-- Hide textures
 		for j = 1, #CHAT_FRAME_TEXTURES do
 			_G[chat..CHAT_FRAME_TEXTURES[j]]:SetTexture(nil)

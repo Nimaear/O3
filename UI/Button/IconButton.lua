@@ -53,7 +53,7 @@ UI.IconButton = UI.Button:extend({
 		self.icon:SetTexture(texture)
 	end,
 	hook = function (self)
-		self.frame:RegisterForClicks('AnyUp', 'AnyDown')
+		self.frame:RegisterForClicks(self.clickRegister)
 		self.frame:SetScript('OnEnter', function (frame)
 			if (not self._enabled) then
 				return

@@ -160,7 +160,7 @@ O3:module({
         O3:destroy(MiniMapTrackingButton)
 
         local queueButton = self:createButton(nil, QueueStatusMinimapButton)
-        queueButton:SetPoint('RIGHT', calendarButton, 'LEFT', 0, 0)
+        queueButton:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', -2, -240)
 
         local mailButton = self:createButton([[Interface\Icons\Inv_Letter_04]], MiniMapMailFrame)
         mailButton:SetPoint('RIGHT', queueButton, 'LEFT', 0, 0)

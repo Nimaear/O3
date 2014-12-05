@@ -8,26 +8,11 @@ O3:module({
 			type = 'Title',
 			label = 'Announce',
 		})
-		self:addOption('channel', {
-			type = 'DropDown',
-			label = 'Channel',
-			_values = {
-				{ label = 'None', value = nil},
-				{ label = 'Say', value = 'SAY'},
-				{ label = 'Party', value = 'PARTY'},
-				{ label = 'Raid', value = 'RAID'},
-				{ label = 'Print', value = 'PRINT'},
-				}
-		})
-		self:addOption('message', {
-			type = 'String',
-			label = 'Interupt message',
-		})
 	end,	
 	config = {
 		enabled = true,
 		font = O3.Media:font('Normal'),
-		fontSize = 9,
+		fontSize = 10,
 		fontFlags = '',
 		statusBar = O3.Media:statusBar('Default'),
 		factionInfo = {
@@ -118,8 +103,8 @@ O3:module({
 			end
 			
 			--Setup Exp Tooltip
-			self.mouseFrame:SetScript("OnEnter", function()
-				GameTooltip:SetOwner(self.mouseFrame, "ANCHOR_NONE")
+			self.mouseFrame:SetScript("OnEnter", function(frame)
+				GameTooltip:SetOwner(frame, "ANCHOR_BOTTOM")
 				GameTooltip:ClearLines()
 				GameTooltip:AddLine("Experience:")
 				GameTooltip:AddLine(string.format('XP: %s/%s (%d%%)', self:commaValue(XP), self:commaValue(maxXP), (XP/maxXP)*100))
@@ -167,7 +152,7 @@ O3:module({
 				self.xpBar:SetValue(value)
 				--Setup Exp Tooltip
 				self.mouseFrame:SetScript("OnEnter", function()
-					GameTooltip:SetOwner(self.mouseFrame, "ANCHOR_NONE")
+					GameTooltip:SetOwner(self.mouseFrame, "ANCHOR_BOTTOM")
 					GameTooltip:ClearLines()
 					GameTooltip:AddLine(string.format('Reputation: %s', name))
 					GameTooltip:AddLine(string.format('Standing: |c'..self.config.factionInfo[rank][3]..'%s|r', self.config.factionInfo[rank][2]))
@@ -211,15 +196,51 @@ O3:module({
 		self:showBar()
 	end,
 	setup = function (self)
-		self.frame = CreateFrame('Frame', nil, UIParent)
-		self.frame:SetSize(196, 13)
-		self.frame:SetPoint('TOPRIGHT', -4, -4)
+
+		self.panel = self.O3.UI.Panel:instance({
+			name = self.name,
+			offset = {nil, nil, 21, nil},
+			width = 320,
+			height = 20,
+			createRegions = function (panel)
+				self.text = panel:createFontString({
+					offset = {0,0,-2,0},
+				})
+			end,
+			style = function (panel)
+				panel:createTexture({
+					layer = 'BACKGROUND',
+					file = O3.Media:texture('Background'),
+					tile = true,
+					color = {0.5, 0.5, 0.5, 0.9},
+					offset = {1,1,1,1},
+				})
+				panel:createOutline({
+					layer = 'BORDER',
+					gradient = 'VERTICAL',
+					color = {1, 1, 1, 0.03 },
+					colorEnd = {1, 1, 1, 0.05 },
+					offset = {1, 1, 1, 1},
+					-- width = 2,
+					-- height = 2,
+				})
+				panel:createOutline({
+					layer = 'BORDER',
+					gradient = 'VERTICAL',
+					color = {0, 0, 0, 1 },
+					colorEnd = {0, 0, 0, 1 },
+					offset = {0, 0, 0, 0 },
+				})			
+			end,
+		})
+
+        self.frame = self.panel.frame
 		--O3.UI:shadow(self.frame)
 
 	--Create XP Status Bar
 		local xpBar = CreateFrame("StatusBar", nil, self.frame, "TextStatusBar")
-		xpBar:SetPoint("BOTTOMLEFT", self.frame,"BOTTOMLEFT", 2, 2)
-		xpBar:SetPoint("TOPRIGHT", self.frame,"TOPRIGHT", -2, -2)
+		xpBar:SetPoint("BOTTOMLEFT", self.frame,"BOTTOMLEFT", 1, 1)
+		xpBar:SetPoint("TOPRIGHT", self.frame,"TOPRIGHT", -1, -1)
 		xpBar:SetStatusBarTexture(self.config.statusBar)
 		xpBar:SetFrameLevel(2)
 		self.xpBar = xpBar

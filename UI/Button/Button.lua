@@ -8,6 +8,7 @@ UI.Button = UI.Panel:extend({
 	color = {0.8, 0.1, 0.1, 0.95},
 	height = 22,
 	attributes = {},
+	clickRegister = 'AnyDown',
 	enable = function (self)
 		self._enabled = true
 		self.bg:SetVertexColor(unpack(self.color))
@@ -28,7 +29,7 @@ UI.Button = UI.Panel:extend({
 		frame.panel = self
 	end,
 	hook = function (self)
-		self.frame:RegisterForClicks('AnyUp')
+		self.frame:RegisterForClicks(self.clickRegister)
 		self.frame:SetScript('OnEnter', function (frame)
 			if (not self._enabled) then
 				return
