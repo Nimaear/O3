@@ -149,11 +149,11 @@ O3:module({
 			end
 		end    
 	end,
-	createChatWindow = function (self)
+	createChatWindow = function (self, height)
 
 		local panel = O3.UI.Panel:instance({
 			width = 374,
-			height = 174,
+			height = height or 174,
 			parentFrame = UIParent,
 			frameStrata = 'BACKGROUND',
 			alpha = self.settings.alpha,
@@ -244,6 +244,9 @@ O3:module({
 
 		local panel2 = self:createChatWindow()
 		panel2:point("BOTTOMLEFT", panel1.frame, "TOPLEFT", 0, 26)
+
+		local panel3 = self:createChatWindow(184)
+		panel3:point("BOTTOMRIGHT", -4, 4)
 
 	end,
 	PLAYER_ENTERING_WORLD = function (self)

@@ -104,7 +104,7 @@ O3:module({
 		for i = 1, 40 do
 			name, rank, icon, count, dispelType, duration, expires, caster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, value1, value2, value3 = UnitAura('player', i, filter)
 			if (name and spellId == querySpellId) then
-				return name, rank, icon, count, dispelType, duration, expires, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff, value1, value2, value3
+				return name, rank, icon, count, dispelType, duration, expires, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff, value1, value2, value3, i
 			elseif not name then
 				break
 			end
@@ -206,6 +206,25 @@ O3:module({
 				end
 			end
 		end)
+
+		combatLog:addListener('SPELL_PEaRIODIC_DAMAGE', function (hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2, spellId, spellName, spellSchool, ...)
+			local foundUnitId = nil
+			for unitId, guid in pairs(self.guids) do
+				if guid == destGUID then
+					foundUnitId = unitId
+					break
+				end
+			end
+			if (watchedAuras[spellId]) then
+				for i = 1, #listeners[spellId] do
+					local listener = listeners[spellId][i]
+					if (listener.enabled) then
+						listener:periodicDamage(spellId, foundUnitId, destGUID, destName, sourceGUID == self.guids.player, ...)
+					end
+				end
+			end			
+		end)		
+
 	end,
 })
 

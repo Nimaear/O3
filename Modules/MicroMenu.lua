@@ -33,11 +33,7 @@ O3:module({
 		},
 		{
 			icon = 'Interface\\Icons\\inv_misc_book_06',
-			onClick = function (self, frame, button, down)
-				if down then
-					ToggleSpellBook('spell')
-				end
-			end,
+			attributes = {type = 'click', clickbutton = SpellbookMicroButton},
 		},
 		{
 			icon = 'Interface\\Icons\\inv_epicguildtabard',
@@ -50,12 +46,10 @@ O3:module({
 		{
 			icon = 'Interface\\Icons\\ability_marksmanship',
 			attributes = {type = 'click', clickbutton = TalentMicroButton},
-			clickRegister = 'AnyDown',
 		},
 		{
 			icon = 'Interface\\Icons\\inv_misc_book_09',
 			attributes = {type = 'click', clickbutton = EJMicroButton},
-			clickRegister = 'AnyDown',
 		},
 		{
 			icon = 'Interface\\Icons\\ability_mount_pegasus',
@@ -149,7 +143,7 @@ O3:module({
 			end
 			local button = O3.UI.IconButton:instance(buttonTemplate)
 			if lastButton then
-				if (i > 9) then
+				if (i > 11) then
 					button:point('TOPRIGHT', lastButton.frame, 'TOPLEFT', -1, 0)
 				else
 					button:point('TOPRIGHT', lastButton.frame, 'BOTTOMRIGHT', 0, -1)

@@ -49,7 +49,7 @@ Modules\SmallPleasures.lua
 Modules\Talentmacro.lua
 Modules\ChatBubbles.lua
 Modules\Buffs.lua
-Modules\CooldownCount.lua
+# Modules\CooldownCount.lua
 Modules\Minimap.lua
 Modules\Tooltip.lua
 Modules\CooldownBar.lua

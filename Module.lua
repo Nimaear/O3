@@ -40,7 +40,6 @@ local Module = O3.Class:extend({
 			self._eventHandlerInitialized = true
 			self:registerEvents()
 		end
-
 	end,
 	reset = function (self)
 	end,

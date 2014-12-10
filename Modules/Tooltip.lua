@@ -19,7 +19,7 @@ O3:module({
         hideInCombat = false,
         hideOnUF = false,
         xOffset = 0,
-        yOffset = 0,
+        yOffset = 190,
     },
     settings = {},
     events = {
