@@ -6,6 +6,7 @@ local UIParent = UIParent
 local GetTime = GetTime
 local floor = math.floor
 local min = math.min
+local max = math.max
 local round = function(x) 
 	return floor(x + 0.5) 
 end
@@ -16,7 +17,7 @@ local ICON_SIZE = 36 --the normal size for an icon (don't change this)
 local DAY, HOUR, MINUTE = 86400, 3600, 60 --used for formatting text
 local DAYISH, HOURISH, MINUTEISH = 3600 * 23.5, 60 * 59.5, 59.5 --used for formatting text at transition points
 local HALFDAYISH, HALFHOURISH, HALFMINUTEISH = DAY/2 + 0.5, HOUR/2 + 0.5, MINUTE/2 + 0.5 --used for calculating next update times
-
+local MIN_DELAY = 0.01
 
 -- handy locales
 local MIN_SCALE
@@ -48,7 +49,10 @@ O3:module({
 		minutesFormat = '|cffffffff%dm|r',
 		hoursFormat = '|cff66ffff%dh|r',
 		daysFormat = '|cff6666ff%dh|r',
-		minScale = 0.6,       
+		minScale = 0.6,
+		setDrawBling = true,
+		setDrawSwipe = true,
+		setDrawEdge = true,
 	},
 	settings = {},
 	addOptions = function (self)
@@ -66,7 +70,20 @@ O3:module({
             min = 6,
             max = 40,
             step = 1,
-        })		
+        })
+		self:addOption('setDrawBling', {
+			type = 'Toggle',
+			label = 'Draw Bling',
+		})
+		self:addOption('setDrawSwipe', {
+			type = 'Toggle',
+			label = 'Draw Swipe',
+		})
+		self:addOption('setDrawEdge', {
+			type = 'Toggle',
+			label = 'Draw Edge',
+		})
+
 	end,
 	VARIABLES_LOADED = function (self)
 		MIN_SCALE = self.settings.minScale
@@ -90,11 +107,7 @@ O3:module({
 		timer:Show()
 	end,
 	setNextUpdate = function (self, timer, nextUpdate)
-		timer.updater:GetAnimations():SetDuration(nextUpdate)
-		if timer.updater:IsPlaying() then
-			timer.updater:Stop()
-		end
-		timer.updater:Play()
+		C_Timer.After(max(nextUpdate, MIN_DELAY), timer.OnTimerDone)
 	end,
 	--returns both what text to display, and how long until the next update
 	getTimeText = function (self, s)
@@ -118,7 +131,7 @@ O3:module({
 		end
 	end,
 	updateText = function (self, timer)
-		local remain = timer.duration - (GetTime() - timer.start)
+		local remain = timer.enabled and (timer.duration - (GetTime() - timer.start)) or 0
 		if round(remain) > 0 then
 			if (timer.fontScale * timer:GetEffectiveScale() / UIParent:GetScale()) < MIN_SCALE then
 				timer.text:SetText('')
@@ -141,15 +154,9 @@ O3:module({
 		local timer = CreateFrame('Frame', nil, scaler)
 		timer:Hide()
 		timer:SetAllPoints(scaler)
-
-		local updater = timer:CreateAnimationGroup()
-		updater:SetLooping('NONE')
-		updater:SetScript('OnFinished', function(updater) 
-			self:updateText(timer) 
-		end)
-
-		local a = updater:CreateAnimation('Animation'); a:SetOrder(1)
-		timer.updater = updater 
+		timer.OnTimerDone = function ()
+			self:updateText(timer)
+		end
 
 		local text = timer:CreateFontString(nil, 'OVERLAY')
 		text:SetPoint('CENTER', 0, 0)
@@ -190,6 +197,9 @@ O3:module({
 
 		--start timer
 		if start > 0 and duration > MIN_DURATION and remainingCharges == 0 and (not cooldown.noCooldownCount) then
+			cooldown:SetDrawBling(self.settings.setDrawBling)
+			cooldown:SetDrawSwipe(self.settings.setDrawSwipe)
+			cooldown:SetDrawEdge(self.settings.setDrawEdge)
 			local timer = timers[cooldown] or self:create(cooldown)
 
 			timer.enabled = true
@@ -217,9 +227,6 @@ O3:module({
 		timer.charges = nil
 		timer.maxCharges = nil
 
-		if timer.updater:IsPlaying() then
-			timer.updater:Stop()
-		end
 		timer:Hide()
 	end,
 	PLAYER_ENTERING_WORLD = function (self)
